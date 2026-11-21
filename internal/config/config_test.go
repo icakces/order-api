@@ -16,11 +16,12 @@ func TestLoad_Success(t *testing.T) {
 	setAllEnv(t)
 
 	cfg, err := Load()
-	// TODO 1: kalau err != nil, gagalkan test dengan t.Fatalf
-	// TODO 2: kalau cfg.DBHost bukan "127.0.0.1", gagalkan dengan t.Errorf
-	//         (tulis pesan yang menyebut nilai yang didapat dan yang diharapkan)
-	_ = cfg
-	_ = err
+	if err != nil {
+		t.Fatalf("Load() returned error: %v", err)
+	}
+	if cfg.DBHost != "127.0.0.1" {
+		t.Errorf("DBHost = %q, want %q", cfg.DBHost, "127.0.0.1")
+	}
 }
 
 func TestLoad_MissingVar(t *testing.T) {
@@ -28,6 +29,7 @@ func TestLoad_MissingVar(t *testing.T) {
 	t.Setenv("DB_HOST", "") // kosong dianggap hilang oleh required()
 
 	_, err := Load()
-	// TODO 3: kalau err == nil, gagalkan test (seharusnya error)
-	_ = err
+	if err == nil {
+		t.Fatal("Load() should return an error when DB_HOST is empty, got nil")
+	}
 }
