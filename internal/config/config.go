@@ -8,10 +8,10 @@ import (
 type Config struct {
 	AppPort    string
 	DBHost     string
-	DBport     string
-	DBname     string
-	DBuser     string
-	DBpassword string
+	DBPort     string
+	DBName     string
+	DBUser     string
+	DBPassword string
 }
 
 // membaca satu env var dan mengembalikan error jika kosong
@@ -36,22 +36,22 @@ func Load() (*Config, error) {
 		return nil, err
 	}
 
-	cfg.DBport, err = required("DB_PORT")
+	cfg.DBPort, err = required("DB_PORT")
 	if err != nil {
 		return nil, err
 	}
 
-	cfg.DBname, err = required("DB_NAME")
+	cfg.DBName, err = required("DB_NAME")
 	if err != nil {
 		return nil, err
 	}
 
-	cfg.DBuser, err = required("DB_USER")
+	cfg.DBUser, err = required("DB_USER")
 	if err != nil {
 		return nil, err
 	}
 
-	cfg.DBpassword, err = required("DB_PASSWORD")
+	cfg.DBPassword, err = required("DB_PASSWORD")
 	if err != nil {
 		return nil, err
 	}
