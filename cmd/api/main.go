@@ -22,14 +22,17 @@ func main() {
 	if err != nil {
 		log.Fatalf("Database: %v", err)
 	}
-	if err := db.Exec("SELECT 1").Error; err != nil {
-		log.Fatalf("Database ping failed: %v", err)
-	}
 
 	app := fiber.New()
 	app.Get("/healthz", func(c fiber.Ctx) error {
+		reqCtx, cancel := context.WithTimeout(c.Context(), 2*time.Second)
+		defer cancel()
+		err := db.WithContext(reqCtx).Exec("SELECT 1").Error
+		if err != nil {
+			log.Printf("Database ping failed: %v", err)
+			return c.Status(fiber.StatusServiceUnavailable).JSON(fiber.Map{"status": "503"})
+		}
 		return c.JSON(fiber.Map{"status": "ok"})
 	})
-
 	log.Fatal(app.Listen(":" + cfg.AppPort))
 }
